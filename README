@@ -1,0 +1,27 @@
+Introduction
+============
+
+This is a simple and practical implementation of the one-time pad encryption algorithm, although since it uses a seed key for generating the pad it's probably more accurate to call it a stream cipher. It uses the cryptographically secure sha256 hashing algorithm (which can easily be changed to another hashing algorithm) to generate the pad from the seed key. The seed key essentially acts as the encryption password, and assuming it's long enough and assuming the hashing algorithm is good enough, this technique should be comparable in strength to a true OTP implementation.
+
+A random salt string is concatenated with the seed key before generating the pad, so even if the same password is used to encrypt the same file many times, the resulting encrypted data will be completely different each time, ensuring that the same password can be used to encrypt many different files. The salt is attached to the beginning of the encrypted data so that it can be recovered and used for decrypting the file, given only the original encryption password.
+
+With these features in place we no longer need to store or transmit a pad which is as long as the original data we're encrypting. All we need to know is the encryption password, which can be any length the user chooses it to be, the longer the better. Using a random salt also solves the "one-time" issue and allows the user to encrypt many different files using the same password. And using secure hashing algorithms ensure that the pad is sufficiently random and cannot be reverse engineered.
+
+Usage Examples
+==============
+
+To encrypt a file you must first include the OTPcrypter.php file and then create a new OTPHashCrypter object, passing the seed key (encryption password) into the constructor function. You can also use the set_key() function to change the seed key at any point. The to encrypt a file you can use the encrypt_file() function, passing it the name of the file you wish to encrypt. You can also use the encrypt() and decrypt() functions directly to encrypt and decrypt text strings or raw binary data.
+
+Encryption:
+
+require_once('OTPcrypter.php');
+$crypter = new OTPHashCrypter('123');
+$result = $crypter->encrypt_file('test.txt');
+file_put_contents('encrypted.txt', $result);
+
+Decryption:
+
+require_once('OTPcrypter.php');
+$crypter = new OTPHashCrypter('123');
+$result = $crypter->decrypt_file('encrypted.txt');
+file_put_contents('test.txt', $result);
