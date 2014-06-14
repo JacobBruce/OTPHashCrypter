@@ -4,7 +4,7 @@
 * www.j-d-b.net
 */
 
-require_once('Random.php');
+require_once(dirname(__FILE__).'/Random.php');
 define('HASH_ALG', 'sha256');
 define('HASH_LEN', 64);
 ini_set('memory_limit', '2048M');
