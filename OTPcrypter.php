@@ -7,7 +7,7 @@
 require_once(dirname(__FILE__).'/Random.php');
 define('HASH_ALG', 'sha256');
 define('HASH_LEN', 64);
-ini_set('memory_limit', '2048M');
+ini_set('memory_limit', -1);
 ini_set('max_execution_time', 300);
 
 class OTPHashCrypter {
