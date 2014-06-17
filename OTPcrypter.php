@@ -24,7 +24,7 @@ class OTPHashCrypter {
 		$this->seed_key = (string) $key_str;
 	}
 	
-	function random_str($length=HASH_LEN) {
+	private function random_str($length=HASH_LEN) {
 		
 		return crypt_random_string($length);
 	}
