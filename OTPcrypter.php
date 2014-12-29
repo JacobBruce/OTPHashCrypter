@@ -14,22 +14,22 @@ class OTPHashCrypter {
 
 	private $seed_key;
 	
-	public function __construct($key_str='') {
-	
-		$this->set_key($key_str);
-	}
-	
 	private function set_key($key_str) {
 	
 		$this->seed_key = (string) $key_str;
 	}
 	
-	private function random_str($length=HASH_LEN) {
+	public function __construct($key_str='') {
+	
+		$this->set_key($key_str);
+	}
+	
+	public function random_str($length=HASH_LEN) {
 		
 		return crypt_random_string($length);
 	}
 	
-	private function read_file($filename) {
+	public function read_file($filename) {
 
 		$handle = fopen($filename, "rb");
 		$contents = fread($handle, filesize($filename));
@@ -47,14 +47,13 @@ class OTPHashCrypter {
 		$file_hex = bin2hex($binary);
 		$file_len = strlen($file_hex);
 		$hash_slt = hash(HASH_ALG, $this->random_str());
-		$hash_pre = hash(HASH_ALG, $password.$hash_slt);
+		$hash_nxt = hash(HASH_ALG, $password.$hash_slt);
 		$hash_req = ceil($file_len / HASH_LEN);
 		$key_hex = '';
 		
 		for ($i=0;$i<$hash_req;$i++) {
-			$hash_nxt = hash(HASH_ALG, $hash_pre);
+			$hash_nxt = hash(HASH_ALG, $hash_nxt);
 			$key_hex .= $hash_nxt;
-			$hash_pre = $hash_nxt;
 		}
 		
 		$key_hex = substr($key_hex, 0, $file_len);
@@ -72,14 +71,13 @@ class OTPHashCrypter {
 		$hash_slt = substr($file_hex, 0, HASH_LEN);
 		$file_hex = substr($file_hex, HASH_LEN);
 		$file_len = strlen($file_hex);
-		$hash_pre = hash(HASH_ALG, $password.$hash_slt);
+		$hash_nxt = hash(HASH_ALG, $password.$hash_slt);
 		$hash_req = ceil($file_len / HASH_LEN);
 		$key_hex = '';
 		
 		for ($i=0;$i<$hash_req;$i++) {
-			$hash_nxt = hash(HASH_ALG, $hash_pre);
+			$hash_nxt = hash(HASH_ALG, $hash_nxt);
 			$key_hex .= $hash_nxt;
-			$hash_pre = $hash_nxt;
 		}
 		
 		$key_hex = substr($key_hex, 0, $file_len);
